@@ -3,6 +3,8 @@ import ProductCards from "../components/ProductCard";
 import { listProducts } from "../actions/productActions";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from "react";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const HomeScreen = () => {
 
@@ -21,9 +23,9 @@ const HomeScreen = () => {
         </Heading>
 
         { loading ? (
-            <p>Loading ...</p>
+            <Loader />
         ) : error ?(
-             <p> {error} ...</p>
+            <Message type="error">{error}</Message>
         ) : (
         <Grid templateColumns='1fr 1fr 1fr 1fr' gap='8' >
         {products.map((prod) => {
