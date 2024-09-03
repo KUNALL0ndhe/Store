@@ -1,7 +1,7 @@
-import { Button, Flex, Grid, Heading, Image, Text } from "@chakra-ui/react";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Button, Flex, Grid, Heading, Image, Select, Text } from "@chakra-ui/react";
+import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
 import Rating from "../components/Ratings";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { listProductDetails } from "../actions/productActions";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
@@ -9,6 +9,9 @@ import Message from "../components/Message";
 
 const ProductScreen = () => {
     const { id } = useParams();
+    const [qty, setQty] = useState(1);
+    const navigate =  useNavigate();
+
     const dispatch = useDispatch();
 
     const productDetails = useSelector((state) => state.productDetails);
@@ -17,6 +20,10 @@ const ProductScreen = () => {
    useEffect(() => {
     dispatch(listProductDetails(id));
    },[id, dispatch]);
+
+   const addToCartHandler = () => {
+        navigate(`/cart/${id}?qty=${qty}`)
+   }
 
     return(
         <>
@@ -78,7 +85,26 @@ const ProductScreen = () => {
                 </Text>
             </Flex>
 
+            {product.countInStock > 0 && (
+                <Flex justifyContent='space-between' py='2'> 
+                <Text>Qty:</Text>
+                <Select
+                value={qty}
+                onChange={(e) => setQty(e.target.value)}
+                width='30%'>
+                    {
+                        [...Array(product.countInStock).keys()].map((i) =>(
+                            <option key={i+1} value={i+1}>
+                                {i+1}
+                            </option>
+                        ) )
+                    }
+                </Select>
+                    </Flex>
+            )}
+
             <Button
+            onClick={addToCartHandler}
             bg='gray.800'
             colorScheme="teal"
             my='2'
